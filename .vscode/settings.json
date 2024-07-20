@@ -1,0 +1,5 @@
+{
+  "rust-analyzer.procMacro.enable": true,
+  "editor.inlayHints.enabled": "offUnlessPressed",
+  "editor.defaultFormatter": "rust-lang.rust-analyzer"
+}

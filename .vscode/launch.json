@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch (Networth HTTP)",
+      "type": "lldb",
+      "request": "launch",
+      "cargo": {
+        "args": ["build"]
+      },
+      "program": "${workspaceFolder}/NetworthHTTP/target/debug/networth_http",
+      "args": [],
+      "cwd": "${workspaceFolder}/NetworthHTTP",
+      "envFile": "${workspaceFolder}/NetworthHTTP/.env",
+      "stopOnEntry": false
+    },
+    {
+      "name": "Launch (Networth DB)",
+      "type": "lldb",
+      "request": "launch",
+      "cargo": {
+        "args": ["build"]
+      },
+      "program": "${workspaceFolder}/NetworthDB/target/debug/networth_db",
+      "args": [],
+      "cwd": "${workspaceFolder}/NetworthDB",
+      "envFile": "${workspaceFolder}/NetworthDB/.env",
+      "stopOnEntry": false
+    }
+  ]
+}
