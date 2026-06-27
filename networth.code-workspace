@@ -1,0 +1,18 @@
+{
+  "folders": [
+    { "name": "NetworthSync", "path": "NetworthSync" },
+    { "name": "NetworthCSV", "path": "NetworthCSV" },
+    { "name": "NetworthDOM", "path": "NetworthDOM" },
+  ],
+  "settings": {
+    "python.languageServer": "None",
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "anysphere.cursorpyright",
+      "editorconfig.editorconfig",
+      "biomejs.biome",
+    ],
+  },
+}

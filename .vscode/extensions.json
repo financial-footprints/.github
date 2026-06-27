@@ -1,7 +1,7 @@
 {
   "recommendations": [
-    "vadimcn.vscode-lldb",
-    "rust-lang.rust-analyzer",
+    "ms-python.python",
+    "anysphere.cursorpyright",
     "editorconfig.editorconfig"
   ]
 }
