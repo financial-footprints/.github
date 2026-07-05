@@ -23,7 +23,7 @@ SELECTED_REPOS=()
 
 usage() {
   cat <<'EOF'
-Run `make ci` in financial-footprints repositories (format, lint, test).
+Run `make dev-ci` in financial-footprints repositories (format, lint, test).
 
 Stops at the first error or warning. Remaining repos are not run.
 
@@ -117,7 +117,7 @@ report_failure() {
   if [[ -n "$target" ]]; then
     echo "CI stopped: $label ($key) failed during make $target." >&2
   else
-    echo "CI stopped: $label ($key) failed during make ci." >&2
+    echo "CI stopped: $label ($key) failed during make dev-ci." >&2
   fi
 
   local issues
@@ -151,8 +151,8 @@ process_repo() {
 
   output_file="$(mktemp)"
 
-  echo "[$key] running make ci in $label..."
-  if (cd "$repo_path" && make ci) 2>&1 | tee "$output_file"; then
+  echo "[$key] running make dev-ci in $label..."
+  if (cd "$repo_path" && make dev-ci) 2>&1 | tee "$output_file"; then
     rm -f "$output_file"
     return 0
   fi

@@ -1,8 +1,17 @@
 {
   "folders": [
-    { "name": "NetworthSync", "path": "NetworthSync" },
-    { "name": "NetworthCSV", "path": "NetworthCSV" },
-    { "name": "NetworthDOM", "path": "NetworthDOM" },
+    {
+      "name": "NetworthSync",
+      "path": "NetworthSync",
+    },
+    {
+      "name": "NetworthCSV",
+      "path": "NetworthCSV",
+    },
+    {
+      "name": "NetworthDOM",
+      "path": "NetworthDOM",
+    },
   ],
   "settings": {
     "python.languageServer": "None",
