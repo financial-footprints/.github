@@ -23,12 +23,12 @@ SELECTED_REPOS=()
 
 usage() {
   cat <<'EOF'
-Run `make dev-ci` in financial-footprints repositories (format, lint, test).
+Run `make check` in financial-footprints repositories (autofix format and lint, then verify).
 
 Stops at the first error or warning. Remaining repos are not run.
 
 Usage:
-  ci.sh [OPTIONS] [REPO...]
+  check.sh [OPTIONS] [REPO...]
 
 Options:
   -h, --help    Print this help and exit
@@ -39,9 +39,9 @@ Repos (optional; default: all three, in dependency order):
   dom    | NetworthDOM  Browser UI
 
 Examples:
-  ./scripts/ci.sh            # all repos (from any directory)
-  ./scripts/ci.sh csv sync   # only NetworthCSV and NetworthSync
-  ./scripts/ci.sh dom
+  ./scripts/check.sh            # all repos (from any directory)
+  ./scripts/check.sh csv sync   # only NetworthCSV and NetworthSync
+  ./scripts/check.sh dom
 EOF
 }
 
@@ -70,7 +70,7 @@ parse_args() {
         ;;
       -*)
         echo "error: unknown option: $1" >&2
-        echo "Run 'ci.sh --help' for usage." >&2
+        echo "Run 'check.sh --help' for usage." >&2
         exit 1
         ;;
       *)
@@ -83,7 +83,7 @@ parse_args() {
     local key
     if ! key="$(normalize_repo "$1")"; then
       echo "error: unknown repository: $1" >&2
-      echo "Run 'ci.sh --help' for valid repo names." >&2
+      echo "Run 'check.sh --help' for valid repo names." >&2
       exit 1
     fi
     SELECTED_REPOS+=("$key")
@@ -115,9 +115,9 @@ report_failure() {
 
   echo >&2
   if [[ -n "$target" ]]; then
-    echo "CI stopped: $label ($key) failed during make $target." >&2
+    echo "Check stopped: $label ($key) failed during make $target." >&2
   else
-    echo "CI stopped: $label ($key) failed during make dev-ci." >&2
+    echo "Check stopped: $label ($key) failed during make check." >&2
   fi
 
   local issues
@@ -151,8 +151,8 @@ process_repo() {
 
   output_file="$(mktemp)"
 
-  echo "[$key] running make dev-ci in $label..."
-  if (cd "$repo_path" && make dev-ci) 2>&1 | tee "$output_file"; then
+  echo "[$key] running make check in $label..."
+  if (cd "$repo_path" && make check) 2>&1 | tee "$output_file"; then
     rm -f "$output_file"
     return 0
   fi
@@ -184,20 +184,20 @@ main() {
   done
 
   if [[ ${#completed[@]} -eq 0 ]]; then
-    echo "CI did not run: no repositories found under $WORKSPACE_ROOT" >&2
+    echo "Check did not run: no repositories found under $WORKSPACE_ROOT" >&2
     exit 1
   fi
 
   echo
   if [[ ${#completed[@]} -eq 1 ]]; then
-    echo "CI passed for ${REPO_LABELS[${completed[0]}]}."
+    echo "Check passed for ${REPO_LABELS[${completed[0]}]}."
   else
     local names=()
     local k
     for k in "${completed[@]}"; do
       names+=("${REPO_LABELS[$k]}")
     done
-    echo "CI passed for ${names[*]}."
+    echo "Check passed for ${names[*]}."
   fi
 }
 

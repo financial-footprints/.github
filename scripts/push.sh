@@ -16,7 +16,7 @@ declare -A REPOS=(
 AMEND=false
 FORCE_AMEND=false
 PUSH_FORCE=false
-ASK_BODY=false
+ASK_BODY=true
 SELECTED_REPOS=()
 
 COMMIT_SUBJECT=""
@@ -33,7 +33,7 @@ Options:
   -h, --help      Print this help and exit
   --amend         Amend the previous commit when there are staged changes
   --force-amend   Amend the previous commit even with no staged changes
-  --body          Prompt for subject (one line) then body (multi-line, finish with Enter twice)
+  --no-body       Skip body prompt; use a single-line commit message only
   --force         Use `git push --force` (also automatic after --amend)
 
 Repos (optional; default: all four, in dependency order):
@@ -43,13 +43,13 @@ Repos (optional; default: all four, in dependency order):
   dom    | NetworthDOM  Browser UI
 
 Examples:
-  ./scripts/push.sh            # all repos (from any directory)
+  ./scripts/push.sh            # all repos (subject + body prompts by default)
   ./scripts/push.sh csv sync   # only NetworthCSV and NetworthSync
   ./scripts/push.sh --amend dom
-  ./scripts/push.sh --force-amend --body csv
-  ./scripts/push.sh --body sync
-  ./scripts/push.sh --body csv sync
-  ./scripts/push.sh --amend --body dom
+  ./scripts/push.sh --force-amend csv
+  ./scripts/push.sh --no-body sync
+  ./scripts/push.sh --no-body csv sync
+  ./scripts/push.sh --amend dom
   ./scripts/push.sh --force readme
 EOF
 }
@@ -87,8 +87,8 @@ parse_args() {
         PUSH_FORCE=true
         shift
         ;;
-      --body)
-        ASK_BODY=true
+      --no-body)
+        ASK_BODY=false
         shift
         ;;
       --)

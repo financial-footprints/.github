@@ -67,8 +67,8 @@ Every repository in this project follows these conventions:
 - **README.md** — goal, setup, and usage for end users
 - **docs/CONTRIBUTING.md** — developer setup, testing, and contribution guidelines
 - **LICENSE** — license file included in each repo
-- **Tests** — unit tests required; run via `make test`
-- **CI** — run `make ci` (format, lint, then test) before submitting changes
+- **Tests** — unit tests required; run via `make check` or `make ci`
+- **CI** — run `make check` before submitting changes; use `make ci` for read-only verification in a single repo, or `./scripts/check.sh` to run `make check` across repos
 - **Linting & formatting** — Python repos use [basedpyright](https://docs.basedpyright.com/) and [ruff](https://docs.astral.sh/ruff/); NetworthDOM uses [Biome](https://biomejs.dev/)
 - **Microservice architecture** — each repo is an independently deployable component
 - **Logging & metrics** — appropriate observability for production use
@@ -80,7 +80,7 @@ After symlinking `scripts/` from this repo, run these from the workspace root:
 
 | Script                                       | Description                                                                                                                             |
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`scripts/ci.sh`](../scripts/ci.sh)          | Run `make ci` across repos in dependency order (`csv`, `sync`, `dom`). Pass repo names to limit scope, e.g. `./scripts/ci.sh csv sync`. |
+| [`scripts/check.sh`](../scripts/check.sh)    | Run `make check` across repos in dependency order (`csv`, `sync`, `dom`). Pass repo names to limit scope, e.g. `./scripts/check.sh csv sync`. |
 | [`scripts/push.sh`](../scripts/push.sh)      | Add, commit, and push across all four repos. Run `./scripts/push.sh --help` for options.                                                |
 
 ## Per-Repo Guides
