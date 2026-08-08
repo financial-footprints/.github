@@ -5,15 +5,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Repo keys in default processing order (dependency chain).
-DEFAULT_REPOS=(csv sync dom)
+DEFAULT_REPOS=(jwt csv sync dom)
 
 declare -A REPO_DIRS=(
+  [jwt]="NetworthJWT"
   [csv]="NetworthCSV"
   [sync]="NetworthSync"
   [dom]="NetworthDOM"
 )
 
 declare -A REPO_LABELS=(
+  [jwt]="NetworthJWT"
   [csv]="NetworthCSV"
   [sync]="NetworthSync"
   [dom]="NetworthDOM"
@@ -33,7 +35,8 @@ Usage:
 Options:
   -h, --help    Print this help and exit
 
-Repos (optional; default: all three, in dependency order):
+Repos (optional; default: all four, in dependency order):
+  jwt    | NetworthJWT  Auth service (JWT issue + JWKS)
   csv    | NetworthCSV  PDF/email to CSV pipeline
   sync   | NetworthSync HTTP API over NetworthCSV
   dom    | NetworthDOM  Browser UI
@@ -41,6 +44,7 @@ Repos (optional; default: all three, in dependency order):
 Examples:
   ./scripts/check.sh            # all repos (from any directory)
   ./scripts/check.sh csv sync   # only NetworthCSV and NetworthSync
+  ./scripts/check.sh jwt
   ./scripts/check.sh dom
 EOF
 }
@@ -50,6 +54,7 @@ normalize_repo() {
   input="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
 
   case "$input" in
+    jwt | networthjwt) printf '%s\n' jwt ;;
     csv | networthcsv) printf '%s\n' csv ;;
     sync | networthsync) printf '%s\n' sync ;;
     dom | networthdom) printf '%s\n' dom ;;

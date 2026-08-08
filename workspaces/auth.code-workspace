@@ -1,0 +1,18 @@
+{
+  "folders": [
+    {
+      "name": "NetworthDOM",
+      "path": "NetworthDOM",
+    },
+    {
+      "name": "NetworthJWT",
+      "path": "NetworthJWT",
+    },
+  ],
+  "settings": {
+    "python.languageServer": "None",
+  },
+  "extensions": {
+    "recommendations": ["editorconfig.editorconfig", "biomejs.biome"],
+  },
+}

@@ -12,6 +12,14 @@
       "name": "NetworthDOM",
       "path": "NetworthDOM",
     },
+    {
+      "name": "NetworthJWT",
+      "path": "NetworthJWT",
+    },
+    {
+      "name": "README",
+      "path": "README",
+    },
   ],
   "settings": {
     "python.languageServer": "None",
