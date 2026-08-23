@@ -5,12 +5,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Repo keys in default processing order (dependency chain).
-DEFAULT_REPOS=(jwt csv sync dom)
+DEFAULT_REPOS=(jwt csv sync db dom)
 
 declare -A REPO_DIRS=(
   [jwt]="NetworthJWT"
   [csv]="NetworthCSV"
   [sync]="NetworthSync"
+  [db]="NetworthDB"
   [dom]="NetworthDOM"
 )
 
@@ -18,6 +19,7 @@ declare -A REPO_LABELS=(
   [jwt]="NetworthJWT"
   [csv]="NetworthCSV"
   [sync]="NetworthSync"
+  [db]="NetworthDB"
   [dom]="NetworthDOM"
 )
 
@@ -35,10 +37,11 @@ Usage:
 Options:
   -h, --help    Print this help and exit
 
-Repos (optional; default: all four, in dependency order):
+Repos (optional; default: all five, in dependency order):
   jwt    | NetworthJWT  Auth service (JWT issue + JWKS)
   csv    | NetworthCSV  PDF/email to CSV pipeline
   sync   | NetworthSync HTTP API over NetworthCSV
+  db     | NetworthDB   Central accounts API
   dom    | NetworthDOM  Browser UI
 
 Examples:
@@ -57,6 +60,7 @@ normalize_repo() {
     jwt | networthjwt) printf '%s\n' jwt ;;
     csv | networthcsv) printf '%s\n' csv ;;
     sync | networthsync) printf '%s\n' sync ;;
+    db | networthdb) printf '%s\n' db ;;
     dom | networthdom) printf '%s\n' dom ;;
     *) return 1 ;;
   esac

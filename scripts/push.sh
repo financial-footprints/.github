@@ -4,13 +4,14 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-DEFAULT_REPOS=(jwt csv sync dom readme)
+DEFAULT_REPOS=(jwt csv sync db dom readme)
 
 declare -A REPOS=(
   [readme]=README
   [jwt]=NetworthJWT
   [csv]=NetworthCSV
   [sync]=NetworthSync
+  [db]=NetworthDB
   [dom]=NetworthDOM
 )
 
@@ -37,11 +38,12 @@ Options:
   --no-body       Skip body prompt; use a single-line commit message only
   --force         Use `git push --force` (also automatic after --amend)
 
-Repos (optional; default: all five, in dependency order):
+Repos (optional; default: all six, in dependency order):
   readme | README       Meta / policies repository
   jwt    | NetworthJWT  Auth service (JWT issue + JWKS)
   csv    | NetworthCSV  PDF/email to CSV pipeline
   sync   | NetworthSync HTTP API over NetworthCSV
+  db     | NetworthDB   Central accounts API
   dom    | NetworthDOM  Browser UI
 
 Examples:
@@ -65,6 +67,7 @@ normalize_repo() {
     jwt | networthjwt) printf '%s\n' jwt ;;
     csv | networthcsv) printf '%s\n' csv ;;
     sync | networthsync) printf '%s\n' sync ;;
+    db | networthdb) printf '%s\n' db ;;
     dom | networthdom) printf '%s\n' dom ;;
     *) return 1 ;;
   esac
