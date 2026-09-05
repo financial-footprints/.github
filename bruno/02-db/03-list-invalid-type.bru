@@ -1,0 +1,22 @@
+meta {
+  name: list accounts invalid type
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{dbUrl}}/api/v1/accounts?account_type=wallet
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("422 zod issues", function () {
+    expect(res.getStatus()).to.equal(422);
+    expect(res.getBody().details).to.be.an("array");
+  });
+}

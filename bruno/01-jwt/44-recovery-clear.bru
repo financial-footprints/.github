@@ -1,0 +1,28 @@
+meta {
+  name: recovery clear without codes
+  type: http
+  seq: 44
+}
+
+delete {
+  url: {{jwtUrl}}/api/v1/auth/mfa/recovery
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{mfaAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "totp": "000000"
+  }
+}
+
+tests {
+  test("recovery not enrolled or bad proof", function () {
+    const status = res.getStatus();
+    expect(status === 400 || status === 401).to.equal(true);
+  });
+}

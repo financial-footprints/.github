@@ -1,0 +1,21 @@
+meta {
+  name: delete unknown secrets
+  type: http
+  seq: 36
+}
+
+delete {
+  url: {{syncUrl}}/api/v1/sync/accounts/{{unknownUuid}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("404", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

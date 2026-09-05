@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+README_REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+
+if [[ -d "$README_REPO_ROOT/../NetworthJWT" ]]; then
+  WORKSPACE_ROOT="$(cd "$README_REPO_ROOT/.." && pwd -P)"
+else
+  WORKSPACE_ROOT="$README_REPO_ROOT"
+fi
 
 # Repo keys in default processing order (dependency chain).
 DEFAULT_REPOS=(jwt csv sync db dom)
@@ -29,7 +35,10 @@ usage() {
   cat <<'EOF'
 Run `make check` in financial-footprints repositories (autofix format and lint, then verify).
 
-Stops at the first error or warning. Remaining repos are not run.
+When jwt, db, and sync are all included in the run, Bruno API e2e tests run at the end
+via `e2e.sh` (isolated stack on ports 18100 / 18200 / 18000).
+
+Stops at the first error or warning. Remaining repos (and e2e) are not run.
 
 Usage:
   check.sh [OPTIONS] [REPO...]
@@ -171,6 +180,45 @@ process_repo() {
   return 1
 }
 
+should_run_e2e() {
+  local completed=("$@")
+  local need=(jwt db sync)
+  local k c found
+
+  for k in "${need[@]}"; do
+    found=0
+    for c in "${completed[@]}"; do
+      if [[ "$c" == "$k" ]]; then
+        found=1
+        break
+      fi
+    done
+    if [[ "$found" -eq 0 ]]; then
+      return 1
+    fi
+  done
+  return 0
+}
+
+run_e2e() {
+  local e2e_script="$SCRIPT_DIR/e2e.sh"
+
+  if [[ ! -f "$e2e_script" ]]; then
+    echo "[e2e] skipped: missing $e2e_script" >&2
+    return 0
+  fi
+
+  echo
+  echo "[e2e] running Bruno API tests..."
+  if "$e2e_script"; then
+    return 0
+  fi
+
+  echo >&2
+  echo "Check stopped: Bruno e2e tests failed." >&2
+  return 1
+}
+
 main() {
   parse_args "$@"
 
@@ -197,16 +245,30 @@ main() {
     exit 1
   fi
 
+  local ran_e2e=0
+  if should_run_e2e "${completed[@]}"; then
+    run_e2e || exit 1
+    ran_e2e=1
+  fi
+
   echo
   if [[ ${#completed[@]} -eq 1 ]]; then
-    echo "Check passed for ${REPO_LABELS[${completed[0]}]}."
+    if [[ "$ran_e2e" -eq 1 ]]; then
+      echo "Check passed for ${REPO_LABELS[${completed[0]}]} and Bruno e2e tests."
+    else
+      echo "Check passed for ${REPO_LABELS[${completed[0]}]}."
+    fi
   else
     local names=()
     local k
     for k in "${completed[@]}"; do
       names+=("${REPO_LABELS[$k]}")
     done
-    echo "Check passed for ${names[*]}."
+    if [[ "$ran_e2e" -eq 1 ]]; then
+      echo "Check passed for ${names[*]} and Bruno e2e tests."
+    else
+      echo "Check passed for ${names[*]}."
+    fi
   fi
 }
 

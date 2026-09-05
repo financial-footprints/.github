@@ -1,0 +1,22 @@
+meta {
+  name: delete missing account
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{dbUrl}}/api/v1/accounts/{{unknownUuid}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("404", function () {
+    expect(res.getStatus()).to.equal(404);
+    expect(res.getBody().details).to.equal("account not found");
+  });
+}

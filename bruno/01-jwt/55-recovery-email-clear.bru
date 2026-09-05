@@ -1,0 +1,28 @@
+meta {
+  name: recovery email clear
+  type: http
+  seq: 55
+}
+
+delete {
+  url: {{jwtUrl}}/api/v1/auth/recovery/email
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "password": "password123"
+  }
+}
+
+tests {
+  test("cleared", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data).to.equal(null);
+  });
+}

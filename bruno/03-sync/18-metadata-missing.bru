@@ -1,0 +1,21 @@
+meta {
+  name: metadata missing
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/metadata?account_id={{accountId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("404 metadata file", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

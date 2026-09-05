@@ -1,0 +1,31 @@
+meta {
+  name: create secrets duplicate
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/accounts
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "{{accountId}}",
+    "passwords": ["secret-bob"],
+    "e2ee_account_number": "{{e2eeAccountNumber}}"
+  }
+}
+
+tests {
+  test("409 already exists", function () {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

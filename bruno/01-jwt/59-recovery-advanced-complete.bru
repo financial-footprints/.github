@@ -1,0 +1,28 @@
+meta {
+  name: recovery advanced complete bad token
+  type: http
+  seq: 59
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/recovery/advanced/complete
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "token": "not-a-token",
+    "new_password": "password123"
+  }
+}
+
+tests {
+  test("400 invalid token", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().details).to.equal("invalid or expired token");
+  });
+}

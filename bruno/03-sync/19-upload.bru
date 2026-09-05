@@ -1,0 +1,32 @@
+meta {
+  name: upload statement
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/accounts/files/upload
+  body: multipartForm
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+body:multipart-form {
+  account_id: {{accountId}}
+  format: csv
+  statement_kind: monthly
+  covered_month: 2023-04
+  file: @file(fixtures/statement.csv)
+}
+
+tests {
+  test("202 job accepted", function () {
+    expect(res.getStatus()).to.equal(202);
+    expect(res.getBody().data.id).to.be.a("string");
+    bru.setVar("uploadJobId", res.getBody().data.id);
+  });
+}

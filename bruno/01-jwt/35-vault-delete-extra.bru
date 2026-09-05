@@ -1,0 +1,28 @@
+meta {
+  name: vault delete extra slot
+  type: http
+  seq: 35
+}
+
+delete {
+  url: {{jwtUrl}}/api/v1/auth/me/vault/slots/{{recoverySlotId}}
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "password": "password123"
+  }
+}
+
+tests {
+  test("deleted extra slot", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data).to.equal(null);
+  });
+}

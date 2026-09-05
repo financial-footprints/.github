@@ -1,0 +1,25 @@
+meta {
+  name: get account
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{dbUrl}}/api/v1/accounts/{{accountId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("seeded account", function () {
+    expect(res.getStatus()).to.equal(200);
+    const data = res.getBody().data;
+    expect(data.id).to.equal(bru.getEnvVar("accountId"));
+    expect(data.bank).to.equal("bob");
+    expect(data.variant).to.equal("easy");
+  });
+}

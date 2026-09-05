@@ -1,0 +1,20 @@
+meta {
+  name: webauthn login begin not enrolled
+  type: http
+  seq: 46
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/mfa/webauthn/login/begin
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+}
+
+tests {
+  test("400 not enrolled", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().details).to.equal("webauthn not enrolled");
+  });
+}

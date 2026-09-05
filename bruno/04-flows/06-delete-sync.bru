@@ -1,0 +1,21 @@
+meta {
+  name: flow delete sync secrets
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{syncUrl}}/api/v1/sync/accounts/{{flowAccountId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("204 secrets deleted", function () {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

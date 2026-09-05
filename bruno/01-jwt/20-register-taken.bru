@@ -1,0 +1,29 @@
+meta {
+  name: register duplicate
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/register
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{adminAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "alice",
+    "password": "password123"
+  }
+}
+
+tests {
+  test("409 username taken", function () {
+    expect(res.getStatus()).to.equal(409);
+    expect(res.getBody().details).to.equal("username taken");
+  });
+}

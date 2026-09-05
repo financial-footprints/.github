@@ -1,0 +1,16 @@
+{
+  "name": "financial-footprints-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed": "bun bruno/scripts/seed.ts",
+    "test:e2e": "cd bruno && bru run --env generated",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@usebruno/cli": "^2.13.2",
+    "hash-wasm": "^4.12.0",
+    "typescript": "^5.8.0"
+  }
+}

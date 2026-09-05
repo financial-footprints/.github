@@ -1,0 +1,31 @@
+meta {
+  name: create secrets unknown account
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/accounts
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "{{unknownUuid}}",
+    "passwords": ["x"],
+    "e2ee_account_number": "{{e2eeAccountNumber}}"
+  }
+}
+
+tests {
+  test("404 unknown db account", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

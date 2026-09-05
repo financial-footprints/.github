@@ -13,6 +13,10 @@
       "path": "NetworthDOM",
     },
     {
+      "name": "NetworthDB",
+      "path": "NetworthDB",
+    },
+    {
       "name": "NetworthJWT",
       "path": "NetworthJWT",
     },
@@ -30,6 +34,7 @@
       "anysphere.cursorpyright",
       "editorconfig.editorconfig",
       "biomejs.biome",
+      "usebruno.bruno",
     ],
   },
 }

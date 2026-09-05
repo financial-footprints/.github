@@ -1,0 +1,21 @@
+meta {
+  name: flow delete db account
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{dbUrl}}/api/v1/accounts/{{flowAccountId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("204 metadata deleted", function () {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

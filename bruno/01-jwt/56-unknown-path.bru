@@ -1,0 +1,15 @@
+meta {
+  name: unknown jwt path
+  type: http
+  seq: 56
+}
+
+get {
+  url: {{jwtUrl}}/api/v1/auth/nope
+}
+
+tests {
+  test("404", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

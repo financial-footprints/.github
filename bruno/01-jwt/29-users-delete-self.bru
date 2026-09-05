@@ -1,0 +1,20 @@
+meta {
+  name: delete self forbidden
+  type: http
+  seq: 29
+}
+
+delete {
+  url: {{jwtUrl}}/api/v1/auth/users/{{adminId}}
+}
+
+headers {
+  Authorization: Bearer {{adminAccessToken}}
+}
+
+tests {
+  test("cannot delete yourself", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().details).to.equal("cannot delete yourself");
+  });
+}

@@ -1,0 +1,22 @@
+meta {
+  name: sources get
+  type: http
+  seq: 33
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/integrations/sources
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("sources list", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.sources).to.be.an("array");
+  });
+}

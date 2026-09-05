@@ -1,0 +1,28 @@
+meta {
+  name: patch user role
+  type: http
+  seq: 27
+}
+
+patch {
+  url: {{jwtUrl}}/api/v1/auth/users/{{doomedId}}
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{adminAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "role": "manager"
+  }
+}
+
+tests {
+  test("patched doomed", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.role).to.equal("manager");
+  });
+}

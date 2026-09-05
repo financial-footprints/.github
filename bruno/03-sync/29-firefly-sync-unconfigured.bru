@@ -1,0 +1,28 @@
+meta {
+  name: firefly sync unconfigured
+  type: http
+  seq: 29
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/integrations/firefly/sync
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {}
+}
+
+tests {
+  test("400 not configured", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(String(res.getBody().details)).to.include("firefly is not configured");
+  });
+}

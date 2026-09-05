@@ -1,0 +1,22 @@
+meta {
+  name: invalid vault verification
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{dbUrl}}/api/v1/accounts
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: not-the-real-verification
+}
+
+tests {
+  test("401 invalid vault verification", function () {
+    expect(res.getStatus()).to.equal(401);
+    expect(res.getBody().details).to.equal("invalid vault verification");
+  });
+}

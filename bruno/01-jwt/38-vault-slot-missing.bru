@@ -1,0 +1,30 @@
+meta {
+  name: vault slot not found
+  type: http
+  seq: 38
+}
+
+put {
+  url: {{jwtUrl}}/api/v1/auth/me/vault/slots/{{unknownUuid}}
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "password": "password123",
+    "salt": "AQIDBAUGBwgJCgsMDQ4PEA",
+    "wrap_blob": "abc.def"
+  }
+}
+
+tests {
+  test("404 slot not found", function () {
+    expect(res.getStatus()).to.equal(404);
+    expect(res.getBody().details).to.equal("slot not found");
+  });
+}

@@ -1,1 +1,6 @@
 workspaces/active.code-workspace
+bruno/.env
+bruno/.run/
+bruno/environments/generated.bru
+bruno/fixtures/generated-backup.zip
+node_modules/

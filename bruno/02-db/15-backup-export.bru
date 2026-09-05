@@ -1,0 +1,40 @@
+meta {
+  name: backup export
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{dbUrl}}/api/v1/accounts/backup/export
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "account_numbers": {
+      "{{accountId}}": "5678"
+    }
+  }
+}
+
+tests {
+  test("zip export", function () {
+    expect(res.getStatus()).to.equal(200);
+    const zip = res.getDataBuffer();
+    if (zip && zip.length >= 2) {
+      expect(zip[0]).to.equal(0x50);
+      expect(zip[1]).to.equal(0x4b);
+      return;
+    }
+    const raw = res.getBody();
+    expect(String(raw).charCodeAt(0)).to.equal(0x50);
+    expect(String(raw).charCodeAt(1)).to.equal(0x4b);
+  });
+}

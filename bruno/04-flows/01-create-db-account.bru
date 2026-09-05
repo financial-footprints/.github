@@ -1,0 +1,32 @@
+meta {
+  name: flow create db account
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{dbUrl}}/api/v1/accounts
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "bank": "hdfc",
+    "account_type": "bank_account",
+    "opening_date": "2022-01-01"
+  }
+}
+
+tests {
+  test("created metadata", function () {
+    expect(res.getStatus()).to.equal(201);
+    bru.setVar("flowAccountId", res.getBody().data.id);
+  });
+}

@@ -1,0 +1,34 @@
+meta {
+  name: firefly sync status no firefly id
+  type: http
+  seq: 32
+}
+
+put {
+  url: {{syncUrl}}/api/v1/sync/integrations/firefly/sync
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "account_id": "{{accountId}}",
+    "synced": true,
+    "scope": "period",
+    "period": "2024-03",
+    "granularity": "monthly"
+  }
+}
+
+tests {
+  test("400 or 200 depending on firefly_id", function () {
+    const status = res.getStatus();
+    expect(status === 400 || status === 200).to.equal(true);
+  });
+}

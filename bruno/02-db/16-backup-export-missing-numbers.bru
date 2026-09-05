@@ -1,0 +1,28 @@
+meta {
+  name: backup export missing account numbers
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{dbUrl}}/api/v1/accounts/backup/export
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {}
+}
+
+tests {
+  test("422 account_numbers required", function () {
+    expect(res.getStatus()).to.equal(422);
+    expect(res.getBody().details).to.equal("account_numbers is required when NetworthSync is configured");
+  });
+}

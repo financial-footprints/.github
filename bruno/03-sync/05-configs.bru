@@ -1,0 +1,23 @@
+meta {
+  name: list configs
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/configs
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("merged configs", function () {
+    expect(res.getStatus()).to.equal(200);
+    const items = res.getBody().data.items;
+    expect(items.some((item) => item.id === bru.getEnvVar("accountId"))).to.equal(true);
+  });
+}

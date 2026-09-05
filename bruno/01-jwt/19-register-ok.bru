@@ -1,0 +1,34 @@
+meta {
+  name: register user
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/register
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{adminAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "bruno_user",
+    "password": "password123",
+    "role": "user"
+  }
+}
+
+tests {
+  test("201 created", function () {
+    expect(res.getStatus()).to.equal(201);
+    const data = res.getBody().data;
+    expect(data.username).to.equal("bruno_user");
+    expect(data.role).to.equal("user");
+    expect(data.id).to.be.a("string");
+    bru.setVar("brunoUserId", data.id);
+  });
+}

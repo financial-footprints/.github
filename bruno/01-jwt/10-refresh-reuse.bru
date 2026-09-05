@@ -1,0 +1,27 @@
+meta {
+  name: refresh reuse revoked
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/refresh
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "refresh_token": "{{adminRefreshToken}}"
+  }
+}
+
+tests {
+  test("401 invalid refresh token", function () {
+    expect(res.getStatus()).to.equal(401);
+    expect(res.getBody().details).to.equal("invalid refresh token");
+  });
+}

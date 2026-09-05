@@ -1,0 +1,23 @@
+meta {
+  name: vault me slots
+  type: http
+  seq: 36
+}
+
+get {
+  url: {{jwtUrl}}/api/v1/auth/me
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+}
+
+tests {
+  test("one password slot remains", function () {
+    expect(res.getStatus()).to.equal(200);
+    const data = res.getBody().data;
+    expect(data.e2ee_vault_initialized).to.equal(true);
+    expect(data.e2ee_slots.length).to.equal(1);
+    bru.setVar("passwordSlotId", data.e2ee_slots[0].id);
+  });
+}

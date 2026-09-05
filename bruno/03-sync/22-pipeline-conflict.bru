@@ -1,0 +1,32 @@
+meta {
+  name: pipeline run conflict or accept
+  type: http
+  seq: 22
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/pipeline/run
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "run": {
+      "financial_year": "FY23-2024"
+    }
+  }
+}
+
+tests {
+  test("409 or 202 if previous finished", function () {
+    const status = res.getStatus();
+    expect(status === 409 || status === 202).to.equal(true);
+  });
+}

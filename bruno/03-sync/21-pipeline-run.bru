@@ -1,0 +1,32 @@
+meta {
+  name: pipeline run
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/pipeline/run
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "run": {
+      "financial_year": "FY23-2024"
+    }
+  }
+}
+
+tests {
+  test("202 pipeline job", function () {
+    expect(res.getStatus()).to.equal(202);
+    bru.setVar("pipelineJobId", res.getBody().data.id);
+  });
+}

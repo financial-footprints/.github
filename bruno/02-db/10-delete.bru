@@ -1,0 +1,21 @@
+meta {
+  name: delete extra account
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{dbUrl}}/api/v1/accounts/{{extraAccountId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("204", function () {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

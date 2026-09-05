@@ -1,0 +1,35 @@
+meta {
+  name: vault already initialized
+  type: http
+  seq: 32
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/me/vault/initialize
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "slots": [
+      {
+        "slot_type": "password",
+        "salt": "AQIDBAUGBwgJCgsMDQ4PEA",
+        "wrap_blob": "abc.def",
+        "password": "password123"
+      }
+    ]
+  }
+}
+
+tests {
+  test("409 already initialized", function () {
+    expect(res.getStatus()).to.equal(409);
+    expect(res.getBody().details).to.equal("vault already initialized");
+  });
+}

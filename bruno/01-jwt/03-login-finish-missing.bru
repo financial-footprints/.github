@@ -1,0 +1,27 @@
+meta {
+  name: login finish missing fields
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/login/finish
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "challenge_id": "not-a-real-challenge"
+  }
+}
+
+tests {
+  test("400 required fields", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().details).to.equal("challenge_id, client_public, and client_proof required");
+  });
+}

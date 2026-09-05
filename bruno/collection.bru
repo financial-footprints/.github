@@ -1,0 +1,11 @@
+meta {
+  name: financial-footprints
+}
+
+auth {
+  mode: none
+}
+
+script:pre-request {
+  bru.setVar("requestId", "bruno-" + Date.now());
+}

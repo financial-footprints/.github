@@ -1,0 +1,32 @@
+meta {
+  name: create account bad dates
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{dbUrl}}/api/v1/accounts
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "bank": "bob",
+    "account_type": "bank_account",
+    "opening_date": "2024-01-01",
+    "closing_date": "2023-01-01"
+  }
+}
+
+tests {
+  test("422 closing before opening", function () {
+    expect(res.getStatus()).to.equal(422);
+  });
+}

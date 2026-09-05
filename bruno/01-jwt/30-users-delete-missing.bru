@@ -1,0 +1,20 @@
+meta {
+  name: delete missing user
+  type: http
+  seq: 30
+}
+
+delete {
+  url: {{jwtUrl}}/api/v1/auth/users/{{unknownUuid}}
+}
+
+headers {
+  Authorization: Bearer {{adminAccessToken}}
+}
+
+tests {
+  test("404 user not found", function () {
+    expect(res.getStatus()).to.equal(404);
+    expect(res.getBody().details).to.equal("user not found");
+  });
+}

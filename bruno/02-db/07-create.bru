@@ -1,0 +1,36 @@
+meta {
+  name: create account
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{dbUrl}}/api/v1/accounts
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "bank": "hdfc",
+    "account_type": "credit_card",
+    "opening_date": "2020-01-01"
+  }
+}
+
+tests {
+  test("201 created", function () {
+    expect(res.getStatus()).to.equal(201);
+    const data = res.getBody().data;
+    expect(data.bank).to.equal("hdfc");
+    expect(data.variant).to.equal(null);
+    expect(data.label).to.equal("hdfc");
+    bru.setVar("extraAccountId", data.id);
+  });
+}

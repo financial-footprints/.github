@@ -1,0 +1,25 @@
+meta {
+  name: me with admin token
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{jwtUrl}}/api/v1/auth/me
+}
+
+headers {
+  Authorization: Bearer {{adminAccessToken}}
+  X-Request-Id: {{requestId}}
+}
+
+tests {
+  test("admin profile", function () {
+    expect(res.getStatus()).to.equal(200);
+    const data = res.getBody().data;
+    expect(data.username).to.equal("admin");
+    expect(data.role).to.equal("administrator");
+    expect(data.id).to.equal(bru.getEnvVar("adminId"));
+    expect(res.getBody().errors).to.eql([]);
+  });
+}

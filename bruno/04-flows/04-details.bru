@@ -1,0 +1,22 @@
+meta {
+  name: flow details
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/details?account_id={{flowAccountId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("details for flow account", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.account.id).to.equal(bru.getVar("flowAccountId"));
+  });
+}

@@ -1,0 +1,22 @@
+meta {
+  name: sync bad vault
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/banks
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: wrong
+}
+
+tests {
+  test("401 invalid vault verification", function () {
+    expect(res.getStatus()).to.equal(401);
+    expect(res.getBody().details).to.equal("invalid vault verification");
+  });
+}

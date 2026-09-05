@@ -1,0 +1,20 @@
+meta {
+  name: sync missing tenant
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/banks
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+}
+
+tests {
+  test("401 missing tenant headers", function () {
+    expect(res.getStatus()).to.equal(401);
+    expect(res.getBody().details).to.equal("missing tenant headers");
+  });
+}

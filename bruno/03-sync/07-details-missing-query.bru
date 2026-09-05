@@ -1,0 +1,22 @@
+meta {
+  name: account details missing query
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/details
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("422 missing account_id", function () {
+    expect(res.getStatus()).to.equal(422);
+    expect(res.getBody().details).to.be.an("array");
+  });
+}

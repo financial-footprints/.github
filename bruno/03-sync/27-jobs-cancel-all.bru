@@ -1,0 +1,22 @@
+meta {
+  name: cancel all jobs
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/jobs/cancel
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("cancel all", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.cancelled_ids).to.be.an("array");
+  });
+}

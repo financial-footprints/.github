@@ -1,0 +1,33 @@
+meta {
+  name: vault add recovery phrase slot
+  type: http
+  seq: 34
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/me/vault/slots
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "slot_type": "recovery_phrase",
+    "salt": "BQIDBAUGBwgJCgsMDQ4PEB",
+    "wrap_blob": "ghi.jkl",
+    "password": "password123"
+  }
+}
+
+tests {
+  test("201 slot created", function () {
+    expect(res.getStatus()).to.equal(201);
+    const data = res.getBody().data;
+    expect(data.slot_type).to.equal("recovery_phrase");
+    bru.setVar("recoverySlotId", data.id);
+  });
+}

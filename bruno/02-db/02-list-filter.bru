@@ -1,0 +1,25 @@
+meta {
+  name: list accounts by type
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{dbUrl}}/api/v1/accounts?account_type=bank_account
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("filter bank_account", function () {
+    expect(res.getStatus()).to.equal(200);
+    const items = res.getBody().data.items;
+    items.forEach((item) => {
+      expect(item.account_type).to.equal("bank_account");
+    });
+  });
+}

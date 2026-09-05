@@ -1,0 +1,25 @@
+meta {
+  name: list accounts
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{dbUrl}}/api/v1/accounts
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  X-Request-Id: {{requestId}}
+}
+
+tests {
+  test("lists seeded account", function () {
+    expect(res.getStatus()).to.equal(200);
+    const items = res.getBody().data.items;
+    expect(items).to.be.an("array");
+    expect(items.some((item) => item.id === bru.getEnvVar("accountId"))).to.equal(true);
+  });
+}

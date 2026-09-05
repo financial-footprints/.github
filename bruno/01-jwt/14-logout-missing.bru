@@ -1,0 +1,25 @@
+meta {
+  name: logout missing token
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{jwtUrl}}/api/v1/auth/logout
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {}
+}
+
+tests {
+  test("400 refresh_token required", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().details).to.equal("refresh_token required");
+  });
+}

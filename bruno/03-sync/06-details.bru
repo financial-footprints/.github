@@ -1,0 +1,22 @@
+meta {
+  name: account details
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/details?account_id={{accountId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("details", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.account.id).to.equal(bru.getEnvVar("accountId"));
+  });
+}

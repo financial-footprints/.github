@@ -1,0 +1,22 @@
+meta {
+  name: get account other tenant
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{dbUrl}}/api/v1/accounts/{{accountId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{secondaryUserId}}
+  X-Vault-Verification: {{secondaryVaultVerification}}
+}
+
+tests {
+  test("tenant isolation 404", function () {
+    expect(res.getStatus()).to.equal(404);
+    expect(res.getBody().details).to.equal("account not found");
+  });
+}

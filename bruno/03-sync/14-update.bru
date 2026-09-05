@@ -1,0 +1,30 @@
+meta {
+  name: update secrets
+  type: http
+  seq: 14
+}
+
+put {
+  url: {{syncUrl}}/api/v1/sync/accounts/{{accountId}}
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "firefly_id": "ff-1"
+  }
+}
+
+tests {
+  test("updated flags", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.firefly_id).to.equal("ff-1");
+  });
+}

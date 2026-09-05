@@ -1,0 +1,25 @@
+meta {
+  name: flow merged configs
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/configs
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("sees hdfc account", function () {
+    expect(res.getStatus()).to.equal(200);
+    const items = res.getBody().data.items;
+    const found = items.find((item) => item.id === bru.getVar("flowAccountId"));
+    expect(found).to.exist;
+    expect(found.bank).to.equal("hdfc");
+  });
+}

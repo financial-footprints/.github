@@ -1,0 +1,22 @@
+meta {
+  name: files bad format
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/files?account_id={{accountId}}&statement_date=2023-04&format=docx
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("400 unsupported format", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(String(res.getBody().details)).to.include("unsupported format");
+  });
+}

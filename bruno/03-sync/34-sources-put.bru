@@ -1,0 +1,48 @@
+meta {
+  name: sources put
+  type: http
+  seq: 34
+}
+
+put {
+  url: {{syncUrl}}/api/v1/sync/integrations/sources
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "sources": [
+      {
+        "id": "tb-1",
+        "label": "local",
+        "type": "thunderbird",
+        "profile": "/tmp/thunderbird-profile"
+      },
+      {
+        "id": "mail-1",
+        "type": "email",
+        "host": "imap.example.com",
+        "username": "user@example.com",
+        "password": "secret"
+      }
+    ]
+  }
+}
+
+tests {
+  test("sources saved", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.configured).to.equal(true);
+    expect(res.getBody().data.sources.length).to.equal(2);
+    const email = res.getBody().data.sources.find((item) => item.type === "email");
+    expect(email.password).to.equal("");
+    expect(email.has_imap_password).to.equal(true);
+  });
+}

@@ -1,0 +1,20 @@
+meta {
+  name: JWT JWKS
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{jwtUrl}}/api/v1/auth/.well-known/jwks.json
+}
+
+tests {
+  test("raw JWKS", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body.keys).to.be.an("array");
+    expect(body.keys[0].kty).to.equal("OKP");
+    expect(body.keys[0].crv).to.equal("Ed25519");
+    expect(body.data).to.equal(undefined);
+  });
+}

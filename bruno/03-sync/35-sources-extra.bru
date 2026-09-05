@@ -1,0 +1,36 @@
+meta {
+  name: sources put extra field
+  type: http
+  seq: 35
+}
+
+put {
+  url: {{syncUrl}}/api/v1/sync/integrations/sources
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "sources": [
+      {
+        "id": "tb-1",
+        "type": "thunderbird",
+        "profile": "/tmp",
+        "extra": true
+      }
+    ]
+  }
+}
+
+tests {
+  test("422 extra forbid", function () {
+    expect(res.getStatus()).to.equal(422);
+  });
+}

@@ -1,0 +1,16 @@
+meta {
+  name: sync missing bearer
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/banks
+}
+
+tests {
+  test("401 missing bearer", function () {
+    expect(res.getStatus()).to.equal(401);
+    expect(res.getBody().details).to.equal("missing bearer token");
+  });
+}

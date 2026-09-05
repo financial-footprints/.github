@@ -1,0 +1,28 @@
+meta {
+  name: totp disable last method alice
+  type: http
+  seq: 61
+}
+
+delete {
+  url: {{jwtUrl}}/api/v1/auth/mfa/totp
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "totp": "000000"
+  }
+}
+
+tests {
+  test("alice totp not confirmed", function () {
+    const status = res.getStatus();
+    expect(status === 400 || status === 401).to.equal(true);
+  });
+}

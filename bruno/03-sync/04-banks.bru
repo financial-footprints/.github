@@ -1,0 +1,24 @@
+meta {
+  name: list banks
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/banks
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("bank catalog", function () {
+    expect(res.getStatus()).to.equal(200);
+    const data = res.getBody().data;
+    expect(data.items).to.be.an("array");
+    expect(data.total).to.be.at.least(1);
+  });
+}

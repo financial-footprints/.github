@@ -1,0 +1,31 @@
+meta {
+  name: create secrets invalid e2ee
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/accounts
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "{{accountId}}",
+    "passwords": ["x"],
+    "e2ee_account_number": "not-a-blob"
+  }
+}
+
+tests {
+  test("422 invalid e2ee", function () {
+    expect(res.getStatus()).to.equal(422);
+  });
+}

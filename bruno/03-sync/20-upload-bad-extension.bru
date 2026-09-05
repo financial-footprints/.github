@@ -1,0 +1,30 @@
+meta {
+  name: upload bad extension
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{syncUrl}}/api/v1/sync/accounts/files/upload
+  body: multipartForm
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+body:multipart-form {
+  account_id: {{accountId}}
+  format: pdf
+  statement_kind: monthly
+  covered_month: 2023-05
+  file: @file(fixtures/statement.csv)
+}
+
+tests {
+  test("400 bad upload", function () {
+    expect(res.getStatus()).to.equal(400);
+  });
+}

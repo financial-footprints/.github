@@ -1,0 +1,28 @@
+meta {
+  name: recovery email missing
+  type: http
+  seq: 50
+}
+
+put {
+  url: {{jwtUrl}}/api/v1/auth/recovery/email
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "password": "password123"
+  }
+}
+
+tests {
+  test("400 email required", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().details).to.equal("email required");
+  });
+}

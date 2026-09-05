@@ -1,0 +1,23 @@
+meta {
+  name: get job
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/jobs/{{pipelineJobId}}
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("job record", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.id).to.equal(bru.getVar("pipelineJobId"));
+    expect(res.getBody().data.stage).to.equal("run");
+  });
+}

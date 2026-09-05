@@ -1,0 +1,23 @@
+meta {
+  name: get account config
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/{{accountId}}/config
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("config item", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().data.id).to.equal(bru.getEnvVar("accountId"));
+    expect(res.getBody().data.has_passwords).to.equal(true);
+  });
+}

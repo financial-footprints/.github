@@ -1,0 +1,21 @@
+meta {
+  name: files missing query
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/files
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("422", function () {
+    expect(res.getStatus()).to.equal(422);
+  });
+}

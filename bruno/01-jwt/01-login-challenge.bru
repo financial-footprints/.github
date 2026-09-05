@@ -1,0 +1,19 @@
+meta {
+  name: login challenge
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{jwtUrl}}/api/v1/auth/login/challenge
+}
+
+tests {
+  test("challenge issued", function () {
+    expect(res.getStatus()).to.equal(200);
+    const data = res.getBody().data;
+    expect(data.challenge_id).to.be.a("string");
+    expect(data.srp_group).to.equal("2048");
+    bru.setVar("challengeId", data.challenge_id);
+  });
+}

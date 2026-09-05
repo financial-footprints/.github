@@ -1,0 +1,22 @@
+meta {
+  name: JWT health
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{jwtUrl}}/api/v1/auth/health
+}
+
+headers {
+  X-Request-Id: {{requestId}}
+}
+
+tests {
+  test("200 envelope", function () {
+    expect(res.getStatus()).to.equal(200);
+    const body = res.getBody();
+    expect(body.data).to.equal(null);
+    expect(body.errors).to.eql([]);
+  });
+}

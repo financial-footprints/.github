@@ -1,0 +1,26 @@
+meta {
+  name: patch me no fields
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{jwtUrl}}/api/v1/auth/me
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {}
+}
+
+tests {
+  test("400 no fields", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().details).to.equal("no fields to update");
+  });
+}

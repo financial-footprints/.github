@@ -2,6 +2,7 @@
   "recommendations": [
     "ms-python.python",
     "anysphere.cursorpyright",
-    "editorconfig.editorconfig"
+    "editorconfig.editorconfig",
+    "usebruno.bruno"
   ]
 }

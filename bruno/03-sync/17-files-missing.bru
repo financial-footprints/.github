@@ -1,0 +1,21 @@
+meta {
+  name: files missing statement
+  type: http
+  seq: 17
+}
+
+get {
+  url: {{syncUrl}}/api/v1/sync/accounts/files?account_id={{accountId}}&statement_date=2023-04&format=csv
+}
+
+headers {
+  Authorization: Bearer {{aliceAccessToken}}
+  X-User-Id: {{userId}}
+  X-Vault-Verification: {{vaultVerification}}
+}
+
+tests {
+  test("404 missing file", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+}
