@@ -13,6 +13,11 @@
     "python.languageServer": "None",
   },
   "extensions": {
-    "recommendations": ["editorconfig.editorconfig", "biomejs.biome"],
+    "recommendations": [
+      "editorconfig.editorconfig",
+      "biomejs.biome",
+      "oven.bun-vscode",
+      "golang.go",
+    ],
   },
 }

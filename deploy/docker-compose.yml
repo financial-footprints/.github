@@ -39,7 +39,6 @@ services:
       APP_ENV: production
       HOST: 0.0.0.0
       PORT: 8100
-      DATABASE_TYPE: postgresql
       POSTGRES_USER: networthjwt
       POSTGRES_PASSWORD: ${JWT_POSTGRES_PASSWORD:-networthjwt}
       POSTGRES_HOST: postgres
@@ -124,7 +123,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_TYPE: postgresql
       POSTGRES_USER: networthsync
       POSTGRES_PASSWORD: ${SYNC_POSTGRES_PASSWORD:-networthsync}
       POSTGRES_HOST: postgres

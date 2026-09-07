@@ -2,7 +2,12 @@
   "recommendations": [
     "ms-python.python",
     "anysphere.cursorpyright",
+    "charliermarsh.ruff",
+    "golang.go",
+    "biomejs.biome",
+    "oven.bun-vscode",
     "editorconfig.editorconfig",
     "usebruno.bruno"
-  ]
+  ],
+  "unwantedRecommendations": ["meta.pyrefly"]
 }

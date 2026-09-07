@@ -59,8 +59,8 @@ Push API images, then deploy via homelab ansible.
 
 ## Health checks
 
-| Service | Endpoint |
-|---------|----------|
-| JWT | `GET /api/v1/auth/health` |
-| DB | `GET /api/v1/accounts/health` |
-| Sync | `GET /api/v1/sync/health` |
+| Service | Endpoint                      |
+| ------- | ----------------------------- |
+| JWT     | `GET /api/v1/auth/health`     |
+| DB      | `GET /api/v1/accounts/health` |
+| Sync    | `GET /api/v1/sync/health`     |

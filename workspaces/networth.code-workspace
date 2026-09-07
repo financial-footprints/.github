@@ -27,14 +27,21 @@
   ],
   "settings": {
     "python.languageServer": "None",
+    "python.pyrefly.disableTypeErrors": true,
+    "python.pyrefly.disableLanguageServices": true,
+    "cursorpyright.analysis.diagnosticMode": "workspace",
   },
   "extensions": {
     "recommendations": [
       "ms-python.python",
       "anysphere.cursorpyright",
-      "editorconfig.editorconfig",
+      "charliermarsh.ruff",
+      "golang.go",
       "biomejs.biome",
+      "oven.bun-vscode",
+      "editorconfig.editorconfig",
       "usebruno.bruno",
     ],
+    "unwantedRecommendations": ["meta.pyrefly"],
   },
 }

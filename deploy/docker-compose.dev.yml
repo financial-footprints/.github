@@ -1,0 +1,50 @@
+name: networth-dev
+
+x-health-interval: &health-interval
+  interval: 5s
+  timeout: 5s
+  retries: 10
+  start_period: 10s
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-networth}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-networth}
+    ports:
+      - "5450:5432"
+    volumes:
+      - ./postgresql.local.sh:/docker-entrypoint-initdb.d/init.sh:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-networth} -d ${POSTGRES_DB:-networth}",
+        ]
+      <<: *health-interval
+
+  dbgate:
+    image: dbgate/dbgate:latest
+    ports:
+      - "8300:3000"
+    environment:
+      CONNECTIONS: dev
+      LABEL_dev: networth-dev
+      SERVER_dev: postgres
+      USER_dev: ${POSTGRES_USER:-networth}
+      PASSWORD_dev: ${POSTGRES_PASSWORD:-change-me}
+      PORT_dev: 5432
+      ENGINE_dev: postgres@dbgate-plugin-postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      <<: *health-interval

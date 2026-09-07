@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-README_REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+SCRIPTS_DIR="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+README_REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
 
 if [[ -d "$README_REPO_ROOT/../NetworthJWT" ]]; then
   WORKSPACE_ROOT="$(cd "$README_REPO_ROOT/.." && pwd -P)"
@@ -35,8 +36,11 @@ usage() {
   cat <<'EOF'
 Run `make check` in financial-footprints repositories (autofix format and lint, then verify).
 
+For each repo, runs `init.sh` first (example env files, Docker infra when needed,
+and `make install` or `make dev-install`) so typecheck and tests have their dependencies.
+
 When jwt, db, and sync are all included in the run, Bruno API e2e tests run at the end
-via `e2e.sh` (isolated stack on ports 18100 / 18200 / 18000).
+via `scripts/tests/e2e.sh` (isolated stack on ports 18100 / 18200 / 18000).
 
 Stops at the first error or warning. Remaining repos (and e2e) are not run.
 
@@ -54,10 +58,10 @@ Repos (optional; default: all five, in dependency order):
   dom    | NetworthDOM  Browser UI
 
 Examples:
-  ./scripts/check.sh            # all repos (from any directory)
-  ./scripts/check.sh csv sync   # only NetworthCSV and NetworthSync
-  ./scripts/check.sh jwt
-  ./scripts/check.sh dom
+  ./scripts/tests/check.sh              # all repos (from workspace root)
+  ./scripts/tests/check.sh csv sync     # only NetworthCSV and NetworthSync
+  ./scripts/tests/check.sh jwt
+  ./scripts/tests/check.sh dom
 EOF
 }
 
@@ -168,6 +172,13 @@ process_repo() {
   fi
 
   output_file="$(mktemp)"
+
+  if ! "$SCRIPTS_DIR/init.sh" --repo "$key"; then
+    echo >&2
+    echo "Check stopped: $label ($key) failed during init." >&2
+    echo >&2
+    return 1
+  fi
 
   echo "[$key] running make check in $label..."
   if (cd "$repo_path" && make check) 2>&1 | tee "$output_file"; then

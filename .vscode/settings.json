@@ -1,4 +1,16 @@
 {
   "python.languageServer": "None",
-  "cursorpyright.analysis.diagnosticMode": "workspace"
+  "python.analysis.disabled": true,
+  "python.pyrefly.disableTypeErrors": true,
+  "python.pyrefly.disableLanguageServices": true,
+  "cursorpyright.analysis.diagnosticMode": "workspace",
+  "cursorpyright.analysis.autoSearchPaths": true,
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.ruff": "explicit",
+    "source.organizeImports.ruff": "explicit"
+  }
 }

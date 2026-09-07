@@ -28,7 +28,7 @@ flowchart LR
 | [.github](https://github.com/financial-footprints/.github)           | Policies, diagram, LICENSE, Bruno e2e     |
 | [NetworthJWT](https://github.com/financial-footprints/NetworthJWT)   | Auth service (JWT issue + JWKS)           |
 | [NetworthDB](https://github.com/financial-footprints/NetworthDB)     | Encrypted account metadata API            |
-| [NetworthCSV](https://github.com/financial-footprints/NetworthCSV)   | PDF/email → CSV pipeline                  |
+| [NetworthCSV](https://github.com/financial-footprints/NetworthCSV)   | PDF/email → CSV pipeline                |
 | [NetworthSync](https://github.com/financial-footprints/NetworthSync) | HTTP API over NetworthCSV                 |
 | [NetworthDOM](https://github.com/financial-footprints/NetworthDOM)   | Browser UI                                |
 

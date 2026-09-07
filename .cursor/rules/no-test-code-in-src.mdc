@@ -1,0 +1,25 @@
+# No test code in production source
+
+Test-only helpers must not live in production `src/` packages.
+
+## Where test helpers belong
+
+| Repo | Test helper location |
+|------|----------------------|
+| NetworthSync, NetworthCSV, NetworthDB, NetworthDOM | `tests/` |
+| NetworthJWT | `src/tests/` and `src/tests/support/` |
+
+## Do not add to `src/`
+
+- Functions or types named `*test*`, `*Test*`, `OpenForTest`, `reset_test_*`, `set_*_for_tests`
+- Comments marking code as "for tests"
+- Test auth bypasses, DB truncate helpers, JWKS injection hooks, or env-cache reset APIs
+
+## Allowed in production `src/`
+
+- Generic dependency injection (e.g. `assembleApp` with an auth hook parameter) when the API is not test-named and production uses it normally
+- Framework-generated artifacts (e.g. Ent `enttest`)
+
+## When adding test infrastructure
+
+Put new helpers in the repo's `tests/` tree (or `src/tests/support/` for Go). Import production modules from tests; never the reverse for test-only behavior.

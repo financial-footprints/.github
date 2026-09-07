@@ -2,14 +2,14 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-README_REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+README_REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
 
 if [[ -d "$README_REPO_ROOT/../NetworthJWT" ]]; then
   WORKSPACE_ROOT="$(cd "$README_REPO_ROOT/.." && pwd -P)"
+elif [[ -d "$SCRIPT_DIR/../../../NetworthJWT" ]]; then
+  WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd -P)"
 elif [[ -d "$SCRIPT_DIR/../../NetworthJWT" ]]; then
   WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
-elif [[ -d "$SCRIPT_DIR/../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
 else
   echo "error: NetworthJWT not found next to the workspace root" >&2
   echo "Clone sibling repos under financial-footprints/ and symlink README/scripts." >&2
@@ -93,6 +93,18 @@ dotenv_var() {
   printf '%s' "$value"
 }
 
+require_dotenv_var() {
+  local file="$1"
+  local key="$2"
+  local value
+  value="$(dotenv_var "$file" "$key")"
+  if [[ -z "$value" ]]; then
+    echo "error: $key is required in $file" >&2
+    exit 1
+  fi
+  printf '%s' "$value"
+}
+
 resolve_service_path() {
   local base_dir="$1"
   local path="$2"
@@ -103,12 +115,27 @@ resolve_service_path() {
   fi
 }
 
-reset_sqlite_db() {
-  local db_path="$1"
-  if [[ -z "$db_path" ]]; then
-    return 0
-  fi
-  rm -f "$db_path" "${db_path}-wal" "${db_path}-shm"
+DEV_COMPOSE="${WORKSPACE_ROOT}/README/deploy/docker-compose.dev.yml"
+COMPOSE=(docker compose -f "$DEV_COMPOSE")
+
+ensure_e2e_docker_infra() {
+  echo "[e2e] starting shared Docker (postgres, valkey)"
+  "${COMPOSE[@]}" up -d --wait postgres valkey
+}
+
+reset_postgres_bruno_db() {
+  local pg_user="$1"
+  local db_name="$2"
+  "${COMPOSE[@]}" exec -T postgres psql -U "$pg_user" -d postgres -tc "SELECT 1" >/dev/null 2>&1 || {
+    echo "error: Postgres role '$pg_user' not found. Reset the Docker volume and retry." >&2
+    exit 1
+  }
+  "${COMPOSE[@]}" exec -T postgres psql -U "$pg_user" -d postgres -c \
+    "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${db_name}' AND pid <> pg_backend_pid()" >/dev/null
+  "${COMPOSE[@]}" exec -T postgres psql -U "$pg_user" -d postgres -c \
+    "DROP DATABASE IF EXISTS ${db_name}"
+  "${COMPOSE[@]}" exec -T postgres psql -U "$pg_user" -d postgres -c \
+    "CREATE DATABASE ${db_name}"
 }
 
 pid_alive() {
@@ -246,18 +273,26 @@ cmd_setup() {
   mkdir -p "$RUN_DIR"
 
   jwt_bruno_env="$JWT_DIR/.env.bruno"
-  jwt_db="$(resolve_service_path "$JWT_DIR" "$(dotenv_var "$jwt_bruno_env" DATABASE_PATH ./data/networthjwt.test.db)")"
+  jwt_pg_user="$(require_dotenv_var "$jwt_bruno_env" POSTGRES_USER)"
+  jwt_pg_db="$(require_dotenv_var "$jwt_bruno_env" POSTGRES_DATABASE)"
   sync_bruno_env="$SYNC_DIR/.env.bruno"
-  sync_db="$(resolve_service_path "$SYNC_DIR" "$(dotenv_var "$sync_bruno_env" DATABASE_PATH ./data/networthsync.test.db)")"
+  sync_pg_user="$(require_dotenv_var "$sync_bruno_env" POSTGRES_USER)"
+  sync_pg_db="$(require_dotenv_var "$sync_bruno_env" POSTGRES_DATABASE)"
+  db_bruno_env="$DB_DIR/.env.bruno"
+  db_pg_user="$(require_dotenv_var "$db_bruno_env" POSTGRES_USER)"
+  db_pg_db="$(require_dotenv_var "$db_bruno_env" POSTGRES_DATABASE)"
   sync_download="$(resolve_service_path "$SYNC_DIR" "$(dotenv_var "$sync_bruno_env" DOWNLOAD_PATH ./data/statements-test)")"
 
-  echo "[e2e] resetting JWT sqlite ($jwt_db)"
-  mkdir -p "$(dirname "$jwt_db")"
-  reset_sqlite_db "$jwt_db"
+  ensure_e2e_docker_infra
 
-  echo "[e2e] resetting Sync sqlite and statement vault"
-  mkdir -p "$(dirname "$sync_db")"
-  reset_sqlite_db "$sync_db"
+  echo "[e2e] resetting JWT Postgres ($jwt_pg_db)"
+  reset_postgres_bruno_db "$jwt_pg_user" "$jwt_pg_db"
+
+  echo "[e2e] resetting NetworthDB Postgres ($db_pg_db)"
+  reset_postgres_bruno_db "$db_pg_user" "$db_pg_db"
+
+  echo "[e2e] resetting Sync Postgres and statement vault"
+  reset_postgres_bruno_db "$sync_pg_user" "$sync_pg_db"
   rm -rf "$sync_download"
   mkdir -p "$sync_download"
 

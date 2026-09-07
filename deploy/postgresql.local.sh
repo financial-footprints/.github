@@ -10,4 +10,8 @@ psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" --dbname "${POSTGRES_DB}" 
 
     CREATE USER networthsync WITH PASSWORD 'networthsync';
     CREATE DATABASE networthsync OWNER networthsync;
+
+    ALTER USER networthjwt CREATEDB;
+    ALTER USER networthdb CREATEDB;
+    ALTER USER networthsync CREATEDB;
 EOSQL
