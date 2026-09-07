@@ -97,21 +97,21 @@ Every repository in this project follows these conventions:
 
 After symlinking `scripts/` from this repo, run these from the workspace root:
 
-| Script                                    | Description                                                                                                                                   |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Script                                    | Description                                                                                                                                                                                                             |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`scripts/check.sh`](../scripts/check.sh) | Run `make check` across repos in order (`jwt`, `csv`, `sync`, `db`, `dom`). When `jwt`, `db`, and `sync` are all included, runs Bruno e2e at the end. Pass repo names to limit scope, e.g. `./scripts/check.sh jwt db`. |
-| [`scripts/e2e.sh`](../scripts/e2e.sh)     | Isolated Bruno API tests for JWT, DB, and Sync. Invoked automatically by `check.sh` when those three repos are checked; can also be run standalone.                                                                |
-| [`scripts/push.sh`](../scripts/push.sh)   | Add, commit, and push across repos. Run `./scripts/push.sh --help` for options.                                                               |
+| [`scripts/e2e.sh`](../scripts/e2e.sh)     | Isolated Bruno API tests for JWT, DB, and Sync. Invoked automatically by `check.sh` when those three repos are checked; can also be run standalone.                                                                     |
+| [`scripts/push.sh`](../scripts/push.sh)   | Add, commit, and push across repos. Run `./scripts/push.sh --help` for options.                                                                                                                                         |
 
 ## Bruno API tests
 
 HTTP contract tests live in [`bruno/`](../bruno/) because they need JWT, DB, and Sync running together. They use a **separate stack** so everyday `make dev` on ports `8100` / `8200` / `8000` is left alone:
 
-| Service     | Env file        | Port  | Data                                      |
-| ----------- | --------------- | ----- | ----------------------------------------- |
-| NetworthJWT | `.env.bruno`    | 18100 | SQLite `./data/networthjwt.test.db`       |
-| NetworthDB  | `.env.bruno`    | 18200 | Postgres database `networthdb_bruno`      |
-| NetworthSync| `.env.bruno`    | 18000 | SQLite `./data/networthsync.test.db`      |
+| Service      | Env file     | Port  | Data                                 |
+| ------------ | ------------ | ----- | ------------------------------------ |
+| NetworthJWT  | `.env.bruno` | 18100 | SQLite `./data/networthjwt.test.db`  |
+| NetworthDB   | `.env.bruno` | 18200 | Postgres database `networthdb_bruno` |
+| NetworthSync | `.env.bruno` | 18000 | SQLite `./data/networthsync.test.db` |
 
 Copy `.env.bruno.example` to `.env.bruno` in each service repo (`make dev-install` does this for DB and Sync). `make e2e` loads that file via `ENV_NETWORTH*` — no `BRUNO_*` mapping in the Makefile.
 

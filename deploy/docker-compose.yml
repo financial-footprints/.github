@@ -1,0 +1,174 @@
+name: networth
+
+x-health-interval: &health-interval
+  interval: 30s
+  timeout: 10s
+  retries: 5
+  start_period: 30s
+
+services:
+  postgres:
+    profiles: [local]
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-networth}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-networth}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./postgresql.local.sh:/docker-entrypoint-initdb.d/init.sh:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-networth} -d ${POSTGRES_DB:-networth}",
+        ]
+      <<: *health-interval
+    networks:
+      - networth
+
+  networthjwt:
+    build:
+      context: ../../NetworthJWT
+    image: ${NETWORTHJWT_IMAGE:-networthjwt:local}
+    container_name: networthjwt
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
+    environment:
+      APP_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8100
+      DATABASE_TYPE: postgresql
+      POSTGRES_USER: networthjwt
+      POSTGRES_PASSWORD: ${JWT_POSTGRES_PASSWORD:-networthjwt}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: networthjwt
+      JWT_ISSUER: networthjwt
+      JWT_AUDIENCE: financial-footprints
+      ED25519_PRIVATE_KEY_PATH: /data/jwt/ed25519_private.pem
+      ED25519_PUBLIC_KEY_PATH: /data/jwt/ed25519_public.pem
+      MFA_ENCRYPTION_KEY: ${JWT_MFA_ENCRYPTION_KEY:?set JWT_MFA_ENCRYPTION_KEY}
+      CORS_ALLOW_ORIGINS: http://localhost:3000
+      WEBAUTHN_RP_ID: localhost
+      WEBAUTHN_RP_ORIGINS: http://localhost:3000
+    volumes:
+      - ${JWT_KEYS_DIR:-./.local/jwt}:/data/jwt:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-qO-",
+          "http://127.0.0.1:8100/api/v1/auth/health",
+        ]
+      <<: *health-interval
+    networks:
+      networth:
+        aliases:
+          - networthjwt
+
+  networthdb:
+    build:
+      context: ../../NetworthDB
+    image: ${NETWORTHDB_IMAGE:-networthdb:local}
+    container_name: networthdb
+    restart: unless-stopped
+    ports:
+      - "8200:8200"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8200
+      POSTGRES_USER: networthdb
+      POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD:-networthdb}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: networthdb
+      JWKS_URL: http://networthjwt:8100/api/v1/auth/.well-known/jwks.json
+      JWT_ISSUER: networthjwt
+      JWT_AUDIENCE: financial-footprints
+      NETWORTHSYNC_URL: http://networthsync:8000
+      STORAGE_MASTER_KEY: ${DB_STORAGE_MASTER_KEY:?set DB_STORAGE_MASTER_KEY}
+      CORS_ALLOW_ORIGINS: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
+      networthjwt:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://127.0.0.1:8200/api/v1/accounts/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      <<: *health-interval
+    networks:
+      networth:
+        aliases:
+          - networthdb
+
+  networthsync:
+    build:
+      context: ../../NetworthSync
+    image: ${NETWORTHSYNC_IMAGE:-networthsync:local}
+    container_name: networthsync
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_TYPE: postgresql
+      POSTGRES_USER: networthsync
+      POSTGRES_PASSWORD: ${SYNC_POSTGRES_PASSWORD:-networthsync}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: networthsync
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      API_RELOAD: "false"
+      DOWNLOAD_PATH: /data/statements
+      STORAGE_MASTER_KEY: ${SYNC_STORAGE_MASTER_KEY:?set SYNC_STORAGE_MASTER_KEY}
+      JWKS_URL: http://networthjwt:8100/api/v1/auth/.well-known/jwks.json
+      JWT_ISSUER: networthjwt
+      JWT_AUDIENCE: financial-footprints
+      NETWORTHDB_URL: http://networthdb:8200
+      JOBS_MAX_WORKERS: 2
+      CORS_ALLOW_ORIGINS: http://localhost:3000
+    volumes:
+      - statements:/data/statements
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
+      networthjwt:
+        condition: service_healthy
+      networthdb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/sync/health')",
+        ]
+      <<: *health-interval
+    networks:
+      networth:
+        aliases:
+          - networthsync
+
+networks:
+  networth:
+    name: networth
+
+volumes:
+  postgres:
+  statements:
