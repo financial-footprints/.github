@@ -42,7 +42,7 @@ Clean up the local financial-footprints workspace.
 Default (full cleanup):
   1. Stop Bruno e2e stack processes (ports 18100 / 18200 / 18000)
   2. Stop everyday dev servers (JWT, DB, Sync, DOM)
-  3. Stop shared Docker containers (Postgres, Valkey, DbGate; images kept)
+  3. Stop shared Docker containers (Postgres, Valkey, pgAdmin; images kept)
   4. Run `make clean` in each repository
 
 Does not remove downloaded Docker images.
@@ -51,7 +51,7 @@ Usage:
   cleanup.sh [--infra] [--help]
 
 Options:
-  --infra   Stop only shared Docker containers (Postgres, Valkey, DbGate)
+  --infra   Stop only shared Docker containers (Postgres, Valkey, pgAdmin)
   --help    Print this help and exit
 EOF
 }
@@ -100,7 +100,7 @@ stop_dev_infra() {
     return 0
   fi
 
-  echo "[cleanup] stopping shared Postgres, Valkey, and DbGate (containers only; images kept)"
+  echo "[cleanup] stopping shared Postgres, Valkey, and pgAdmin (containers only; images kept)"
   docker compose -f "$DEV_COMPOSE" down
 }
 

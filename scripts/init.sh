@@ -37,7 +37,7 @@ usage() {
 Ensure local env files, dev dependencies, and Docker infra for one financial-footprints repo.
 
 Copies example env/config files when missing, starts required Docker services
-(Postgres, Valkey, DbGate), creates Postgres databases from `.env` / `.env.test`
+(Postgres, Valkey, pgAdmin), creates Postgres databases from `.env` / `.env.test`
 when missing, then runs the repo's install target (make install or
 make dev-install).
 
@@ -48,7 +48,7 @@ Usage:
 Options:
   --repo KEY   jwt | csv | sync | db | dom
   --cwd PATH   Repo directory (--repo inferred from the folder name when omitted)
-  --dev        Start full dev Docker stack (Postgres + Valkey + DbGate where applicable)
+  --dev        Start full dev Docker stack (Postgres + Valkey + pgAdmin where applicable)
   -h, --help   Print this help and exit
 EOF
 }
@@ -168,10 +168,10 @@ repo_docker_services() {
       if [[ "$DEV_MODE" == true ]]; then
         case "$key" in
           jwt)
-            services+=(valkey dbgate)
+            services+=(valkey pgadmin)
             ;;
           sync | db)
-            services+=(dbgate)
+            services+=(pgadmin)
             ;;
         esac
       fi
@@ -203,11 +203,11 @@ ensure_docker_infra() {
       jwt)
         echo "[$key] postgres ready on localhost:5450"
         echo "[$key] valkey ready: KVSTORE_URL=$KVSTORE_URL"
-        echo "[$key] dbgate: http://127.0.0.1:8300"
+        echo "[$key] pgadmin: http://127.0.0.1:8300"
         ;;
       sync | db)
         echo "[$key] postgres ready on localhost:5450"
-        echo "[$key] dbgate: http://127.0.0.1:8300"
+        echo "[$key] pgadmin: http://127.0.0.1:8300"
         ;;
     esac
   elif [[ "$key" == jwt || "$key" == sync || "$key" == db ]]; then

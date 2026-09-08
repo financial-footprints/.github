@@ -87,7 +87,7 @@ Initialize the local stack (Docker, env files, dependencies), then open one
 xfce4-terminal window with four tabs that each run `make dev`.
 
 Init runs once in the parent process (JWT, DB, Sync, DOM in order) so shared
-Docker infra (Postgres, Valkey, DbGate) starts without container name conflicts.
+Docker infra (Postgres, Valkey, pgAdmin) starts without container name conflicts.
 
 Services (everyday dev ports):
   NetworthJWT     http://127.0.0.1:8100
@@ -96,7 +96,7 @@ Services (everyday dev ports):
   NetworthDOM     http://127.0.0.1:3000
   Postgres        localhost:5450
   Valkey          localhost:6379  (KVSTORE_URL=$KVSTORE_URL)
-  DbGate          http://127.0.0.1:8300
+  pgAdmin         http://127.0.0.1:8300
 
 Tabs open in dependency order: JWT, DB, Sync, DOM.
 Each tab runs `make dev` only (dependencies were installed during init).
