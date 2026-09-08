@@ -3,13 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 SCRIPTS_DIR="$(cd "$SCRIPT_DIR/.." && pwd -P)"
-README_REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
-
-if [[ -d "$README_REPO_ROOT/../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$README_REPO_ROOT/.." && pwd -P)"
-else
-  WORKSPACE_ROOT="$README_REPO_ROOT"
-fi
+source "$SCRIPTS_DIR/lib/workspace.sh"
 
 # Repo keys in default processing order (dependency chain).
 DEFAULT_REPOS=(jwt csv sync db dom)

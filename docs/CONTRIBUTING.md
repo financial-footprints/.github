@@ -35,7 +35,7 @@ flowchart LR
 ## Prerequisites
 
 - Python 3.11+ with [uv](https://docs.astral.sh/uv/)
-- Go 1.22+ (NetworthJWT)
+- Go 1.26+ (NetworthJWT)
 - [make](https://www.gnu.org/software/make/)
 - [Bun](https://bun.sh/) (NetworthDB, NetworthDOM, Bruno e2e)
 - Node >= 22.14 (NetworthDOM)
@@ -126,15 +126,6 @@ Manual setup (same ports):
 6. **[NetworthDOM](https://github.com/financial-footprints/NetworthDOM/blob/main/docs/CONTRIBUTING.md)** — copy `.env.example` to `.env`; `make install`; `make dev` (`127.0.0.1:3000`).
 
 Stop the dev stack and clean build artifacts: `./scripts/cleanup.sh` (or `./scripts/dev.sh --down` for Docker containers only).
-
-If you previously ran the old Drizzle Studio stack, remove its Docker image once after pulling this change (no Postgres volume reset needed):
-
-```bash
-cd README
-./scripts/dev.sh --down
-docker compose -f deploy/docker-compose.dev.yml down --rmi local --remove-orphans
-docker rmi networth-dev-drizzle-studio 2>/dev/null || true
-```
 
 When changing code, start from the repository you want to modify and work outward, ensuring dependent repos still work after your change.
 

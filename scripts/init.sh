@@ -2,13 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-README_REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
-
-if [[ -d "$README_REPO_ROOT/../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$README_REPO_ROOT/.." && pwd -P)"
-else
-  WORKSPACE_ROOT="$README_REPO_ROOT"
-fi
+source "$SCRIPT_DIR/lib/workspace.sh"
 
 declare -A REPO_DIRS=(
   [jwt]="NetworthJWT"

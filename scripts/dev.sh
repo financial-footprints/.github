@@ -57,22 +57,8 @@ fi
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-README_REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+source "$SCRIPT_DIR/lib/workspace.sh"
 
-if [[ -d "$README_REPO_ROOT/../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$README_REPO_ROOT/.." && pwd -P)"
-elif [[ -d "$SCRIPT_DIR/../../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
-elif [[ -d "$SCRIPT_DIR/../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
-else
-  echo "error: NetworthJWT not found next to the workspace root" >&2
-  echo "Clone sibling repos under financial-footprints/ and symlink README/scripts." >&2
-  exit 1
-fi
-
-JWT_DIR="$WORKSPACE_ROOT/NetworthJWT"
 DB_DIR="$WORKSPACE_ROOT/NetworthDB"
 SYNC_DIR="$WORKSPACE_ROOT/NetworthSync"
 DOM_DIR="$WORKSPACE_ROOT/NetworthDOM"

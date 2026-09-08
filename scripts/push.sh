@@ -2,19 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-README_REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
-
-if [[ -d "$README_REPO_ROOT/../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$README_REPO_ROOT/.." && pwd -P)"
-elif [[ -d "$SCRIPT_DIR/../../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd -P)"
-elif [[ -d "$SCRIPT_DIR/../NetworthJWT" ]]; then
-  WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
-else
-  echo "error: NetworthJWT not found next to the workspace root" >&2
-  echo "Clone sibling repos under financial-footprints/ and symlink README/scripts." >&2
-  exit 1
-fi
+source "$SCRIPT_DIR/lib/workspace.sh"
 
 DEFAULT_REPOS=(jwt csv sync db dom readme)
 
@@ -65,7 +53,6 @@ Examples:
   ./scripts/push.sh --force-amend csv
   ./scripts/push.sh --no-body sync
   ./scripts/push.sh --no-body csv sync
-  ./scripts/push.sh --amend dom
   ./scripts/push.sh --force readme
 EOF
 }

@@ -18,7 +18,7 @@ services:
     volumes:
       - ./postgresql.local.sh:/docker-entrypoint-initdb.d/init.sh:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U networth -d networth"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d networth"]
       <<: *health-interval
 
   pgadmin:
@@ -26,7 +26,7 @@ services:
     ports:
       - "8300:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: dev@sms.com
+      PGADMIN_DEFAULT_EMAIL: dev@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: "False"
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
@@ -65,7 +65,7 @@ configs:
             "Host": "postgres",
             "Port": 5432,
             "MaintenanceDB": "postgres",
-            "Username": "networth",
+            "Username": "admin",
             "PassFile": "/config/pgpass",
             "SSLMode": "prefer"
           }
@@ -73,4 +73,4 @@ configs:
       }
   pgadmin-pgpass:
     content: |
-      postgres:5432:*:networth:admin
+      postgres:5432:*:admin:admin
