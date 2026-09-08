@@ -41,7 +41,7 @@ tests {
     expect(res.getStatus()).to.equal(200);
     expect(res.getBody().data.sources.length).to.equal(2);
     const email = res.getBody().data.sources.find((item) => item.type === "email");
-    expect(email.has_imap_password).to.equal(true);
+    expect(email.has_password).to.equal(true);
     expect(email).to.not.have.property("password");
   });
 }
