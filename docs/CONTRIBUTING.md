@@ -27,7 +27,7 @@ flowchart LR
 | -------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | [.github](https://github.com/financial-footprints/.github)           | Policies, diagram, LICENSE, e2e | This file                                                                                              |
 | [NetworthJWT](https://github.com/financial-footprints/NetworthJWT)   | Auth service (JWT issue + JWKS) | [CONTRIBUTING.md](https://github.com/financial-footprints/NetworthJWT/blob/main/docs/CONTRIBUTING.md)  |
-| [NetworthDB](https://github.com/financial-footprints/NetworthDB)     | Encrypted account metadata API  | [CONTRIBUTING.md](https://github.com/financial-footprints/NetworthDB/blob/main/docs/CONTRIBUTING.md)   |
+| [NetworthDB](https://github.com/financial-footprints/NetworthHTTP)   | Encrypted account metadata API  | [CONTRIBUTING.md](https://github.com/financial-footprints/NetworthHTTP/blob/main/docs/CONTRIBUTING.md) |
 | [NetworthCSV](https://github.com/financial-footprints/NetworthCSV)   | PDF/email -> CSV pipeline       | [CONTRIBUTING.md](https://github.com/financial-footprints/NetworthCSV/blob/main/docs/CONTRIBUTING.md)  |
 | [NetworthSync](https://github.com/financial-footprints/NetworthSync) | HTTP API over NetworthCSV       | [CONTRIBUTING.md](https://github.com/financial-footprints/NetworthSync/blob/main/docs/CONTRIBUTING.md) |
 | [NetworthDOM](https://github.com/financial-footprints/NetworthDOM)   | Browser UI                      | [CONTRIBUTING.md](https://github.com/financial-footprints/NetworthDOM/blob/main/docs/CONTRIBUTING.md)  |
@@ -73,7 +73,7 @@ Clone all repos as siblings under one workspace root:
 mkdir financial-footprints && cd financial-footprints
 git clone git@github.com:financial-footprints/.github.git README
 git clone git@github.com:financial-footprints/NetworthJWT.git
-git clone git@github.com:financial-footprints/NetworthDB.git
+git clone git@github.com:financial-footprints/NetworthHTTP.git
 git clone git@github.com:financial-footprints/NetworthCSV.git
 git clone git@github.com:financial-footprints/NetworthSync.git
 git clone git@github.com:financial-footprints/NetworthDOM.git
@@ -121,7 +121,7 @@ Manual setup (same ports):
 1. **[NetworthCSV](https://github.com/financial-footprints/NetworthCSV/blob/main/docs/CONTRIBUTING.md)** — copy `.env`, `sources.json`, and `accounts.json` from the example files; set `DOWNLOAD_PATH` in `.env`; `make install`.
 2. Start shared Postgres: `./scripts/dev.sh` (or `docker compose -f README/deploy/docker-compose.dev.yml up -d --wait`).
 3. **[NetworthJWT](https://github.com/financial-footprints/NetworthJWT/blob/main/docs/CONTRIBUTING.md)** — copy `.env.example` to `.env`, generate Ed25519 keys, `make migrate`, `make createuser`, `make dev` (`127.0.0.1:8100`, Postgres database `networthjwt`).
-4. **[NetworthDB](https://github.com/financial-footprints/NetworthDB/blob/main/docs/CONTRIBUTING.md)** — copy `.env.example` to `.env`, set `STORAGE_MASTER_KEY`, `make dev-install`, `make dev` (`127.0.0.1:8200`).
+4. **[NetworthDB](https://github.com/financial-footprints/NetworthHTTP/blob/main/docs/CONTRIBUTING.md)** — copy `.env.example` to `.env`, set `STORAGE_MASTER_KEY`, `make dev-install`, `make dev` (`127.0.0.1:8200`).
 5. **[NetworthSync](https://github.com/financial-footprints/NetworthSync/blob/main/docs/CONTRIBUTING.md)** — copy `.env.example` to `.env` (required before any `make` target); set `STORAGE_MASTER_KEY`; `make dev-install` (expects sibling `../NetworthCSV`); `make dev` (`127.0.0.1:8000`, Postgres database `networthsync`).
 6. **[NetworthDOM](https://github.com/financial-footprints/NetworthDOM/blob/main/docs/CONTRIBUTING.md)** — copy `.env.example` to `.env`; `make install`; `make dev` (`127.0.0.1:3000`).
 
@@ -150,14 +150,14 @@ Every repository in this project follows these conventions:
 
 After symlinking `scripts/` from this repo, run these from the workspace root:
 
-| Script                                                | Description                                                                                                                                                                                                                                                                                                                                             |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`scripts/dev.sh`](../scripts/dev.sh)                 | Start shared Postgres + pgAdmin, then open xfce4-terminal tabs for JWT, DB, Sync, and DOM (`init.sh` then `make dev` in each). Use `--down` to stop Postgres and pgAdmin. pgAdmin UI: `http://127.0.0.1:8300` (login `dev@example.com` / `admin`).                                                                                                                                                                                 |
-| [`scripts/tests/check.sh`](../scripts/tests/check.sh) | Run `make check` across repos in order (`jwt`, `csv`, `sync`, `db`, `dom`). Runs [`init.sh`](../scripts/init.sh) per repo first (env files, Docker when needed, dependencies). When `jwt`, `db`, and `sync` are all included, runs Bruno e2e at the end. Pass repo names to limit scope, e.g. `./scripts/tests/check.sh jwt db`.                        |
-| [`scripts/init.sh`](../scripts/init.sh)               | Copies example env/config files when missing, starts required Docker services (Postgres, Valkey, pgAdmin), creates Postgres databases from `.env` / `.env.test` when missing, and runs `make install` or `make dev-install` for one repo (`--repo db`, `--cwd /path/to/NetworthDB`, or `--dev` for the full dev stack). Used by `dev.sh` and `check.sh`. |
-| [`scripts/cleanup.sh`](../scripts/cleanup.sh)         | Stop Bruno e2e and everyday dev servers, stop shared Docker containers (images kept), and run `make clean` in each repo. Use `--infra` for Docker containers only.                                                                                                                                                                                      |
-| [`scripts/tests/e2e.sh`](../scripts/tests/e2e.sh)     | Isolated Bruno API tests for JWT, DB, and Sync. Invoked automatically by `check.sh` when those three repos are checked; can also be run standalone.                                                                                                                                                                                                     |
-| [`scripts/push.sh`](../scripts/push.sh)               | Add, commit, and push across repos. Run `./scripts/push.sh --help` for options.                                                                                                                                                                                                                                                                         |
+| Script                                                | Description                                                                                                                                                                                                                                                                                                                                               |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`scripts/dev.sh`](../scripts/dev.sh)                 | Start shared Postgres + pgAdmin, then open xfce4-terminal tabs for JWT, DB, Sync, and DOM (`init.sh` then `make dev` in each). Use `--down` to stop Postgres and pgAdmin. pgAdmin UI: `http://127.0.0.1:8300` (login `dev@example.com` / `admin`).                                                                                                        |
+| [`scripts/tests/check.sh`](../scripts/tests/check.sh) | Run `make check` across repos in order (`jwt`, `csv`, `sync`, `db`, `dom`). Runs [`init.sh`](../scripts/init.sh) per repo first (env files, Docker when needed, dependencies). When `jwt`, `db`, and `sync` are all included, runs Bruno e2e at the end. Pass repo names to limit scope, e.g. `./scripts/tests/check.sh jwt db`.                          |
+| [`scripts/init.sh`](../scripts/init.sh)               | Copies example env/config files when missing, starts required Docker services (Postgres, Valkey, pgAdmin), creates Postgres databases from `.env` / `.env.test` when missing, and runs `make install` or `make dev-install` for one repo (`--repo db`, `--cwd /path/to/NetworthHTTP`, or `--dev` for the full dev stack). Used by `dev.sh` and `check.sh`.|
+| [`scripts/cleanup.sh`](../scripts/cleanup.sh)         | Stop Bruno e2e and everyday dev servers, stop shared Docker containers (images kept), and run `make clean` in each repo. Use `--infra` for Docker containers only.                                                                                                                                                                                        |
+| [`scripts/tests/e2e.sh`](../scripts/tests/e2e.sh)     | Isolated Bruno API tests for JWT, DB, and Sync. Invoked automatically by `check.sh` when those three repos are checked; can also be run standalone.                                                                                                                                                                                                       |
+| [`scripts/push.sh`](../scripts/push.sh)               | Add, commit, and push across repos. Run `./scripts/push.sh --help` for options.                                                                                                                                                                                                                                                                           |
 
 ## Bruno API tests
 
@@ -196,7 +196,7 @@ Out of scope for Bruno: WebAuthn ceremony success, live SMTP, live Firefly III, 
 ## Per-Repo Guides
 
 - [NetworthJWT CONTRIBUTING.md](https://github.com/financial-footprints/NetworthJWT/blob/main/docs/CONTRIBUTING.md)
-- [NetworthDB CONTRIBUTING.md](https://github.com/financial-footprints/NetworthDB/blob/main/docs/CONTRIBUTING.md)
+- [NetworthDB CONTRIBUTING.md](https://github.com/financial-footprints/NetworthHTTP/blob/main/docs/CONTRIBUTING.md)
 - [NetworthCSV CONTRIBUTING.md](https://github.com/financial-footprints/NetworthCSV/blob/main/docs/CONTRIBUTING.md)
 - [NetworthSync CONTRIBUTING.md](https://github.com/financial-footprints/NetworthSync/blob/main/docs/CONTRIBUTING.md)
 - [NetworthDOM CONTRIBUTING.md](https://github.com/financial-footprints/NetworthDOM/blob/main/docs/CONTRIBUTING.md)

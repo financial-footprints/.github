@@ -11,7 +11,7 @@ declare -A REPOS=(
   [jwt]=NetworthJWT
   [csv]=NetworthCSV
   [sync]=NetworthSync
-  [db]=NetworthDB
+  [db]=NetworthHTTP
   [dom]=NetworthDOM
 )
 

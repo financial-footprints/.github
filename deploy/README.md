@@ -11,7 +11,7 @@ Each service image is built from its own repository Dockerfile — not from this
 ## Prerequisites
 
 - Docker with Compose v2
-- Sibling repos: `NetworthJWT/`, `NetworthDB/`, `NetworthSync/`, `NetworthDOM/`
+- Sibling repos: `NetworthJWT/`, `NetworthHTTP/`, `NetworthSync/`, `NetworthDOM/`
 
 ## Start the API stack
 
@@ -48,7 +48,7 @@ Or leave those empty to use the Rsbuild dev proxy (same ports).
 
 ```bash
 docker build -t docker.io/atb00ker/networth-jwt:latest NetworthJWT
-docker build -t docker.io/atb00ker/networth-db:latest NetworthDB
+docker build -t docker.io/atb00ker/networth-db:latest NetworthHTTP
 docker build -t docker.io/atb00ker/networth-sync:latest NetworthSync
 ```
 

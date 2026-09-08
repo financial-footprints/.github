@@ -14,7 +14,7 @@
     },
     {
       "name": "NetworthDB",
-      "path": "NetworthDB",
+      "path": "NetworthHTTP",
     },
     {
       "name": "NetworthJWT",

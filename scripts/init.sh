@@ -8,7 +8,7 @@ declare -A REPO_DIRS=(
   [jwt]="NetworthJWT"
   [csv]="NetworthCSV"
   [sync]="NetworthSync"
-  [db]="NetworthDB"
+  [db]="NetworthHTTP"
   [dom]="NetworthDOM"
 )
 
@@ -37,7 +37,7 @@ make dev-install).
 
 Usage:
   init.sh --repo KEY
-  init.sh --cwd /path/to/NetworthDB
+  init.sh --cwd /path/to/NetworthHTTP
 
 Options:
   --repo KEY   jwt | csv | sync | db | dom
@@ -139,7 +139,7 @@ detect_repo_key_from_path() {
     NetworthJWT) printf '%s\n' jwt ;;
     NetworthCSV) printf '%s\n' csv ;;
     NetworthSync) printf '%s\n' sync ;;
-    NetworthDB) printf '%s\n' db ;;
+    NetworthHTTP) printf '%s\n' db ;;
     NetworthDOM) printf '%s\n' dom ;;
     *) return 1 ;;
   esac

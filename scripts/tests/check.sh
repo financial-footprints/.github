@@ -12,7 +12,7 @@ declare -A REPO_DIRS=(
   [jwt]="NetworthJWT"
   [csv]="NetworthCSV"
   [sync]="NetworthSync"
-  [db]="NetworthDB"
+  [db]="NetworthHTTP"
   [dom]="NetworthDOM"
 )
 

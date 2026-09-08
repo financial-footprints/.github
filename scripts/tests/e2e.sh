@@ -16,7 +16,7 @@ else
 fi
 
 JWT_DIR="$WORKSPACE_ROOT/NetworthJWT"
-DB_DIR="$WORKSPACE_ROOT/NetworthDB"
+DB_DIR="$WORKSPACE_ROOT/NetworthHTTP"
 SYNC_DIR="$WORKSPACE_ROOT/NetworthSync"
 RUN_DIR="$README_DIR/bruno/.run"
 JWT_HEALTH="http://127.0.0.1:18100/api/v1/auth/health"

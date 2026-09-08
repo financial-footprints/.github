@@ -74,7 +74,7 @@ services:
 
   networthdb:
     build:
-      context: ../../NetworthDB
+      context: ../../NetworthHTTP
     image: ${NETWORTHDB_IMAGE:-networthdb:local}
     container_name: networthdb
     restart: unless-stopped

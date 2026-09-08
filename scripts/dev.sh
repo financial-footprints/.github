@@ -59,7 +59,7 @@ set -euo pipefail
 
 source "$SCRIPT_DIR/lib/workspace.sh"
 
-DB_DIR="$WORKSPACE_ROOT/NetworthDB"
+DB_DIR="$WORKSPACE_ROOT/NetworthHTTP"
 SYNC_DIR="$WORKSPACE_ROOT/NetworthSync"
 DOM_DIR="$WORKSPACE_ROOT/NetworthDOM"
 
